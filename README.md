@@ -11,6 +11,7 @@ You may use this script freely, but please **CREDIT ME WHEN MAKING MODIFICATIONS
 _G.ModuleToBeSaved =
 _G.SaveAsFile = true
 _G.CopyToClipboard = false
+_G.StayAnonymous = true
 -- LOADSTRING --
 loadstring(game:HttpGet("https://raw.githubusercontent.com/UncertainlyRound/ModuleSaver/refs/heads/main/main.lua"))()
 ```
