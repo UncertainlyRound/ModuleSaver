@@ -140,6 +140,10 @@ for i, v in pairs(require(module)) do
 end
 newscript = newscript .. "\nreturn module"
 
+if _G.StayAnonymous then
+	local randomuser = game.Players:GetNameFromUserIdAsync(math.random(450000, 100000000)) for i, v in ipairs(game:GetDescendants()) do if v:IsA("ModuleScript") then if string.find(v.Source, game.Players.LocalPlayer.Name) then v.Source = string.gsub(v.Source, game.Players.LocalPlayer.Name, randomuser) end end end
+end
+
 if _G.SaveAsFile then
 	writefile("Saved " .. module:GetFullName() .. ".lua", newscript)
 end
