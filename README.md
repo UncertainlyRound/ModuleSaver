@@ -3,7 +3,7 @@ Used to convert information from a module into lua format. Utilises the require(
 
 Scripted by [@ForleakenRBLX](https://www.youtube.com/@ForleakenRBLX)
 
-You may use this script freely, but please **CREDIT ME WHEN MAKING MODIFICATIONS TO THE SOURCE CODE**
+You may use this script freely, but please **CREDIT ME WHEN MAKING MODIFICATIONS TO THE SOURCE CODE** and **DO NOT CLAIM IT AS YOUR OWN**
 
 # Loadstring
 ```lua
