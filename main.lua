@@ -65,7 +65,7 @@ function InstanceToPath(v : Instance)
     return currentpath
 end
 
-local function stringify(obj)
+local function stringify(obj, indent)
     local finalstring = typeof(obj)
     if typeof(obj) == "CFrame" then
         finalstring = "CFrame.new(" .. tostring(obj) .. ")"
@@ -87,11 +87,21 @@ local function stringify(obj)
         end
         finalstring = string.gsub(current, "\n", "\\n")
     elseif typeof(obj) == "table" then
-        finalstring = "{"
+        finalstring = "{" .. "\n" .. string.rep("\t", indent)
         for index, value in pairs(obj) do
-            finalstring = finalstring .. "[" .. stringify(index) .. "] = " .. stringify(value) .. ", "
+            if typeof(index) == "number" then
+    			finalstring = finalstring .. "[" .. tostring(index) .. "] = " .. stringify(value, indent + 1) .. ", \n" .. string.rep("\t", indent)
+		    elseif typeof(index) == "string" then
+		    	if checkstring(index) then
+		    		finalstring = finalstring .. index .. " = " .. stringify(value, indent + 1) .. ", \n" .. string.rep("\t", indent)
+		    	else
+    				finalstring = finalstring .. "[" .. stringify(index, indent + 1) .. "] = " .. stringify(value, indent + 1) .. ", \n" .. string.rep("\t", indent)
+  		  	end
+  		  else
+  		  	finalstring = finalstring .. "[" .. stringify(index, indent + 1) .. "] = " .. stringify(value, indent + 1) .. ", \n" .. string.rep("\t", indent)
+ 		   end
         end
-        finalstring = finalstring .. "}"
+        finalstring = string.sub(finalstring, 1, string.len(finalstring) - 1) .. "}"
     elseif typeof(obj) == "boolean" then
         finalstring = tostring(obj)
     elseif typeof(obj) == "UDim" then
@@ -136,7 +146,17 @@ end
 
 local newscript = "local module = {}\n\n--Module Saver Scripted by @ForleakenRBLX\n\n"
 for i, v in pairs(require(module)) do
-    newscript = newscript .. "module[" .. stringify(i) .. "] = " .. stringify(v) .. "\n"
+	if typeof(i) == "number" then
+    	newscript = newscript .. "module[" .. tostring(i) .. "] = " .. stringify(v, 1) .. "\n"
+    elseif typeof(i) == "string" then
+    	if checkstring(i) then
+    		newscript = newscript .. "module." .. i .. " = " .. stringify(v, 1) .. "\n"
+    	else
+    		newscript = newscript .. "module[" .. stringify(i, 1) .. "] = " .. stringify(v, 1) .. "\n"
+    	end
+    else
+    	newscript = newscript .. "module[" .. stringify(i, 1) .. "] = " .. stringify(v, 1) .. "\n"
+    end
 end
 newscript = newscript .. "\nreturn module"
 if _G.StayAnonymous then
