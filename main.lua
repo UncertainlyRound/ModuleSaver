@@ -29,6 +29,14 @@ end
 
 local validchars = {"q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "_"}
 local alphabet = {"q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v", "b", "n", "m"}
+local backslashes = {"a", "e", "f", "n", "r", "t", "v", "<", ">", "b", "B", "d", "D", "s", "S", "w", "W", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+
+function gsubs(str)
+	local final = str
+	final = string.gsub(final, "\n", "\\".."n")
+	final = string.gsub(final, "\t", "\\".."t")
+	return final
+end
 
 function checkstring(str : string)
     local valid = true
@@ -62,7 +70,7 @@ function InstanceToPath(v : Instance)
             end
         end
     end
-    return currentpath
+    return gsubs(currentpath)
 end
 
 local function stringify(obj, indent)
@@ -85,7 +93,7 @@ local function stringify(obj, indent)
         else
         	current = "[[" .. obj .. "]]"
         end
-        finalstring = string.gsub(current, "\n", "\\n")
+        finalstring = gsubs(current)
     elseif typeof(obj) == "table" then
         finalstring = "{" .. "\n" .. string.rep("\t", indent)
         for index, value in pairs(obj) do
@@ -93,9 +101,9 @@ local function stringify(obj, indent)
     			finalstring = finalstring .. "[" .. tostring(index) .. "] = " .. stringify(value, indent + 1) .. ", \n" .. string.rep("\t", indent)
 		    elseif typeof(index) == "string" then
 		    	if checkstring(index) then
-		    		finalstring = finalstring .. index .. " = " .. stringify(value, indent + 1) .. ", \n" .. string.rep("\t", indent)
+		    		finalstring = finalstring .. gsubs(index) .. " = " .. stringify(value, indent + 1) .. ", \n" .. string.rep("\t", indent)
 		    	else
-    				finalstring = finalstring .. "[" .. stringify(index, indent + 1) .. "] = " .. stringify(value, indent + 1) .. ", \n" .. string.rep("\t", indent)
+    				finalstring = finalstring .. "[" .. tostring(index, indent + 1) .. "] = " .. stringify(value, indent + 1) .. ", \n" .. string.rep("\t", indent)
   		  	end
   		  else
   		  	finalstring = finalstring .. "[" .. stringify(index, indent + 1) .. "] = " .. stringify(value, indent + 1) .. ", \n" .. string.rep("\t", indent)
@@ -150,7 +158,7 @@ for i, v in pairs(require(module)) do
     	newscript = newscript .. "module[" .. tostring(i) .. "] = " .. stringify(v, 1) .. "\n"
     elseif typeof(i) == "string" then
     	if checkstring(i) then
-    		newscript = newscript .. "module." .. i .. " = " .. stringify(v, 1) .. "\n"
+    		newscript = newscript .. "module." .. gsubs(i) .. " = " .. stringify(v, 1) .. "\n"
     	else
     		newscript = newscript .. "module[" .. stringify(i, 1) .. "] = " .. stringify(v, 1) .. "\n"
     	end
