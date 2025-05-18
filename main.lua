@@ -152,6 +152,8 @@ local function stringify(obj, indent)
     return finalstring
 end
 
+local startTime = os.clock()
+
 local newscript = "local module = {}\n\n--Module Saver Scripted by @ForleakenRBLX\n\n"
 for i, v in pairs(require(module)) do
 	if typeof(i) == "number" then
@@ -173,6 +175,8 @@ if _G.StayAnonymous then
 		newscript = string.gsub(newscript, game.Players.LocalPlayer.Name, randomuser)
 	end
 end
+
+newscript = newscript .. "\n\n-- Time Taken: " .. tostring(os.clock()-startTime)
 
 if _G.SaveAsFile then
 	writefile("Saved " .. module:GetFullName() .. ".lua", newscript)
